@@ -1,0 +1,124 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char matrix[5][5];
+
+// Function to create Playfair matrix
+void generateMatrix(char key[])
+{
+    int used[26] = {0};
+    int k = 0;
+
+    used['J' - 'A'] = 1; // Combine I and J
+
+    // Add key letters
+    for (int i = 0; key[i] != '\0'; i++)
+    {
+        char ch = toupper(key[i]);
+
+        if (ch == 'J')
+            ch = 'I';
+
+        if (!used[ch - 'A'])
+        {
+            matrix[k / 5][k % 5] = ch;
+            used[ch - 'A'] = 1;
+            k++;
+        }
+    }
+
+    // Add remaining alphabet letters
+    for (char ch = 'A'; ch <= 'Z'; ch++)
+    {
+        if (!used[ch - 'A'])
+        {
+            matrix[k / 5][k % 5] = ch;
+            used[ch - 'A'] = 1;
+            k++;
+        }
+    }
+}
+
+// Find position of a character
+void findPosition(char ch, int *row, int *col)
+{
+    if (ch == 'J')
+        ch = 'I';
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            if (matrix[i][j] == ch)
+            {
+                *row = i;
+                *col = j;
+                return;
+            }
+        }
+    }
+}
+
+// Encrypt plaintext
+void encrypt(char text[])
+{
+    int r1, c1, r2, c2;
+
+    for (int i = 0; text[i] != '\0'; i += 2)
+    {
+        findPosition(text[i], &r1, &c1);
+        findPosition(text[i + 1], &r2, &c2);
+
+        // Same row
+        if (r1 == r2)
+        {
+            printf("%c%c",
+                   matrix[r1][(c1 + 1) % 5],
+                   matrix[r2][(c2 + 1) % 5]);
+        }
+
+        // Same column
+        else if (c1 == c2)
+        {
+            printf("%c%c",
+                   matrix[(r1 + 1) % 5][c1],
+                   matrix[(r2 + 1) % 5][c2]);
+        }
+
+        // Rectangle rule
+        else
+        {
+            printf("%c%c",
+                   matrix[r1][c2],
+                   matrix[r2][c1]);
+        }
+    }
+}
+
+int main()
+{
+    char key[50];
+    char plaintext[100];
+
+    printf("Enter keyword: ");
+    scanf("%s", key);
+
+    generateMatrix(key);
+
+    printf("\nPlayfair Matrix:\n");
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+            printf("%c ", matrix[i][j]);
+        printf("\n");
+    }
+
+    printf("\nEnter plaintext (even number of letters): ");
+    scanf("%s", plaintext);
+
+    printf("Encrypted text: ");
+    encrypt(plaintext);
+
+    return 0;
+}
