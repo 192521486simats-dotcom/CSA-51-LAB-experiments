@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+// Function to find modular inverse
+int modInverse(int a) {
+    for (int i = 1; i < 26; i++) {
+        if ((a * i) % 26 == 1)
+            return i;
+    }
+    return -1;
+}
+
+int main() {
+    int C1 = 'B' - 'A'; // ciphertext B
+    int C2 = 'U' - 'A'; // ciphertext U
+
+    int P1 = 'E' - 'A'; // assume B -> e
+    int P2 = 'T' - 'A'; // assume U -> t
+
+    int a, b;
+
+    // Solve equations:
+    // C1 = aP1 + b (mod 26)
+    // C2 = aP2 + b (mod 26)
+
+    for (a = 1; a < 26; a++) {
+        for (b = 0; b < 26; b++) {
+            if (((a * P1 + b) % 26 == C1) &&
+                ((a * P2 + b) % 26 == C2)) {
+                printf("Possible keys: a = %d, b = %d\n", a, b);
+            }
+        }
+    }
+
+    return 0;
+}
