@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char text[] = "53‡‡†305))6*;4826)4‡.)4‡);806*;48†8¶60))85;;]8*;:‡*8†83";
+    int freq[256] = {0};
+
+    for (int i = 0; text[i] != '\0'; i++) {
+        freq[(int)text[i]]++;
+    }
+
+    printf("Character Frequencies:\n");
+    for (int i = 0; i < 256; i++) {
+        if (freq[i] > 0)
+            printf("%c : %d\n", i, freq[i]);
+    }
+
+    return 0;
+}
